@@ -1,0 +1,243 @@
+
+
+mysql> use db1;
+Database changed
+
+mysql> CREATE TABLE products(
+    -> id INT,
+    -> name VARCHAR(50),
+    -> price DECIMAL(7,2)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DESC products;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| id    | int          | YES  |     | NULL    |       |
+| name  | varchar(50)  | YES  |     | NULL    |       |
+| price | decimal(7,2) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> -- lets add 5 products to the tables
+
+mysql> INSERT INTO products (id,name,price)
+    -> values(1,'Laptop',30000.0),
+    -> (2,'Keyboard',1000.0),
+    -> (3,'Mouse',800.0),
+    -> (4,'Light',50.0);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from products;
++------+---------+----------+
+| id   | name    | price    |
++------+---------+----------+
+|    1 | Laptop  | 30000.00 |
+|    2 | Keyboard|  1000.00 |
+|    3 | Mouse   |   800.00 |
+|    4 | Light   |    50.00 |
++------+---------+----------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO products (id, name, price)
+    -> VALUES (5, 'Laptop Bag', 1500.0);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from products;
++------+------------+----------+
+| id   | name       | price    |
++------+------------+----------+
+|    1 | Laptop     | 30000.00 |
+|    2 | Keybord    |  1000.00 |
+|    3 | Mouse      |   800.00 |
+|    4 | Light      |    50.00 |
+|    5 | Laptop Bag |  1500.00 |
++------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE products ADD COLUMN category VARCHAR(50);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> DESC products;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| id       | int          | YES  |     | NULL    |       |
+| name     | varchar(50)  | YES  |     | NULL    |       |
+| price    | decimal(7,2) | YES  |     | NULL    |       |
+| category | varchar(50)  | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> update products SET category = 'Electronics' where id = 1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update products SET category = 'Hardware' where id = 2 AND 3 AND 4;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from products;
++------+------------+----------+-------------+
+| id   | name       | price    | category    |
++------+------------+----------+-------------+
+|    1 | Laptop     | 30000.00 | Electronics |
+|    2 | Keybord    |  1000.00 | Hardware    |
+|    3 | Mouse      |   800.00 | NULL        |
+|    4 | Light      |    50.00 | NULL        |
+|    5 | Laptop Bag |  1500.00 | NULL        |
++------+------------+----------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> update products SET category = 'Hardware' where id = 3;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update products SET category = 'Hardware' where id = 4;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update products SET category = 'Bag' where id = 5;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> desc products;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| id       | int          | YES  |     | NULL    |       |
+| name     | varchar(50)  | YES  |     | NULL    |       |
+| price    | decimal(7,2) | YES  |     | NULL    |       |
+| category | varchar(50)  | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from products;
++------+------------+----------+-------------+
+| id   | name       | price    | category    |
++------+------------+----------+-------------+
+|    1 | Laptop     | 30000.00 | Electronics |
+|    2 | Keybord    |  1000.00 | Hardware    |
+|    3 | Mouse      |   800.00 | Hardware    |
+|    4 | Light      |    50.00 | Hardware    |
+|    5 | Laptop Bag |  1500.00 | Bag         |
++------+------------+----------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT name FROM products where price = (select min(price) FROM products);
++-------+
+| name  |
++-------+
+| Light |
++-------+
+1 row in set (0.00 sec)
+
+mysql> SELECT name , price FROM products where price = (select max(price) FROM products);
++--------+----------+
+| name   | price    |
++--------+----------+
+| Laptop | 30000.00 |
++--------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT name , price FROM products where price = (select avg(price) FROM products);
+Empty set (0.00 sec)
+
+mysql> UPDATE products
+    -> SET price = price * 1.1;
+Query OK, 5 rows affected (0.01 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> select * from products;
++------+------------+----------+-------------+
+| id   | name       | price    | category    |
++------+------------+----------+-------------+
+|    1 | Laptop     | 33000.00 | Electronics |
+|    2 | Keybord    |  1100.00 | Hardware    |
+|    3 | Mouse      |   880.00 | Hardware    |
+|    4 | Light      |    55.00 | Hardware    |
+|    5 | Laptop Bag |  1650.00 | Bag         |
++------+------------+----------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> -- display name of all products
+mysql> select name from products;
++------------+
+| name       |
++------------+
+| Laptop     |
+| Keybord    |
+| Mouse      |
+| Light      |
+| Laptop Bag |
++------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT name FROM products
+    -> WHERE price<500 AND price>1000;
+Empty set (0.00 sec)
+
+mysql> SELECT name FROM products
+    -> WHERE price>500 AND price>1000;
++------------+
+| name       |
++------------+
+| Laptop     |
+| Keybord    |
+| Laptop Bag |
++------------+
+3 rows in set (0.00 sec)
+
+mysql> --  LEST MARK ID AS A PRIMARY KEY
+mysql> ALTER TABLE products ADD PRIMARY KEY (id);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc products
+    -> ;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| id       | int          | NO   | PRI | NULL    |       |
+| name     | varchar(50)  | YES  |     | NULL    |       |
+| price    | decimal(7,2) | YES  |     | NULL    |       |
+| category | varchar(50)  | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT name,price from products;
++------------+----------+
+| name       | price    |
++------------+----------+
+| Laptop     | 33000.00 |
+| Keybord    |  1100.00 |
+| Mouse      |   880.00 |
+| Light      |    55.00 |
+| Laptop Bag |  1650.00 |
++------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM products ORDER BY price ASC;
++----+------------+----------+-------------+
+| id | name       | price    | category    |
++----+------------+----------+-------------+
+|  4 | Light      |    55.00 | Hardware    |
+|  3 | Mouse      |   880.00 | Hardware    |
+|  2 | Keybord    |  1100.00 | Hardware    |
+|  5 | Laptop Bag |  1650.00 | Bag         |
+|  1 | Laptop     | 33000.00 | Electronics |
++----+------------+----------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> -- sorted all products on the base of price usinf ASC
+mysql> -- now lets count different product in the shop
+mysql> SELECT COUNT(DISTINCT category) FROM products;
++--------------------------+
+| COUNT(DISTINCT category) |
++--------------------------+
+|                        3 |
++--------------------------+
+1 row in set (0.00 sec)
